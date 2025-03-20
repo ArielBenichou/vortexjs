@@ -5,6 +5,7 @@ import { Program } from "./engine/renderer/Program";
 import { Camera } from "./engine/renderer/Camera";
 import { Entity } from "./engine/application/Entity";
 
+// TODO: create coordinates system with world space so we can put object ast (0,0,0) or (-40,23,100), this position then later need to be transform to screen space
 const app = new Application();
 app.setClearColor(vec4.fromValues(0.0, 0.0, 0.0, 1.0));
 
