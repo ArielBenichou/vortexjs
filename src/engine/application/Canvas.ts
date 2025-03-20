@@ -5,6 +5,7 @@
 export class Canvas {
   public canvas: HTMLCanvasElement;
   public gl: WebGL2RenderingContext;
+  private resizeCallbacks: (()=>void)[] = [];
 
   constructor(parent?: HTMLElement) {
     this.canvas = document.createElement("canvas");
@@ -26,8 +27,13 @@ export class Canvas {
     this.gl = gl;
   }
 
+  public onResize(callback: ()=>void) {
+    this.resizeCallbacks.push(callback);
+  }
+
   private resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
+    this.resizeCallbacks.forEach((callback) => callback());
   }
 }

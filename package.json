@@ -1,18 +1,21 @@
 {
   "name": "vortexjs",
-  "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
+  "module": "src/main.ts",
   "devDependencies": {
     "@types/node": "^20.11.30",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
     "@types/bun": "latest"
   },
-  "module": "src/main.ts"
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "type": "module",
+  "dependencies": {
+    "gl-matrix": "^3.4.3"
+  }
 }

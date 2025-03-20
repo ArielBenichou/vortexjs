@@ -1,3 +1,4 @@
+import { vec4 } from "gl-matrix";
 import { Canvas } from "./Canvas";
 
 /** this is here to abstract the "window" aka the canvas,
@@ -8,36 +9,46 @@ import { Canvas } from "./Canvas";
 export class Application {
     public canvas: Canvas;
     private time: number = 0;
+    private clearColor: vec4;
     private readonly TARGET_FPS: number = 120;
     private readonly FRAME_TIME: number = 1000 / this.TARGET_FPS;
-    private updateCallbacks: ((deltatime: number) => void)[] = [];
-    private drawCallbacks: ((deltatime: number) => void)[] = [];
+    private updateCallbacks: Callback[] = [];
+    private drawCallbacks: Callback[] = [];
 
     constructor(parent?: HTMLElement) {
         this.canvas = new Canvas(parent);
+        this.clearColor = vec4.fromValues(0.0, 0.0, 0.0, 0.0);
     }
 
-    public onUpdate(callback: (deltatime: number) => void): void {
+    public onResize(callback: ()=>void): void {
+        this.canvas.onResize(callback);
+    }
+
+    public onUpdate(callback: Callback): void {
         this.updateCallbacks.push(callback);
     }
 
-    public onDraw(callback: (deltatime: number) => void): void {
+    public onDraw(callback: Callback): void {
         this.drawCallbacks.push(callback);
     }
 
+    public setClearColor(color: vec4): void {
+        this.clearColor = color;
+    }
+
     private update(deltatime: number): void {
-        this.updateCallbacks.forEach(callback => callback(deltatime));
+        this.updateCallbacks.forEach(callback => callback(deltatime, this.time));
     }
 
     private draw(deltatime: number): void {
         const gl = this.canvas.gl;
         
-        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clearColor(this.clearColor[0], this.clearColor[1], this.clearColor[2], this.clearColor[3]);
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.viewport(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
 
-        this.drawCallbacks.forEach(callback => callback(deltatime));
+        this.drawCallbacks.forEach(callback => callback(deltatime, this.time));
     }
 
     private loop = (timestamp: number): void => {
@@ -58,3 +69,4 @@ export class Application {
         requestAnimationFrame(this.loop);
     }
 }
+type Callback = (deltatime: number, time: number) => void;
